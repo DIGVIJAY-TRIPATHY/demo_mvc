@@ -1,0 +1,37 @@
+<%- include('../partials/header', { scripts: ['/js/projects.js'] }) %>
+
+<div class="page-head page-head-row">
+  <div>
+    <h1>Projects</h1>
+    <p>Projects you own or have been added to.</p>
+  </div>
+  <a class="btn btn-inline" href="/projects/new">New project</a>
+</div>
+
+<% if (projects.length === 0) { %>
+  <div class="panel">
+    <div class="empty">
+      <strong>No projects yet</strong>
+      Create your first project to get started.
+    </div>
+  </div>
+<% } else { %>
+  <div class="panel list-panel">
+    <% projects.forEach((p) => { %>
+      <a class="list-row" href="/projects/<%= p.id %>">
+        <div class="list-main">
+          <span class="list-title"><%= p.name %></span>
+          <% if (p.description) { %>
+            <span class="list-sub"><%= p.description %></span>
+          <% } %>
+        </div>
+        <div class="list-meta">
+          <span class="badge"><%= roleLabels[p.role] %></span>
+          <span class="list-count"><%= p.memberCount %> <%= p.memberCount === 1 ? 'member' : 'members' %></span>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+<% } %>
+
+<%- include('../partials/footer', { scripts: ['/js/projects.js'] }) %>

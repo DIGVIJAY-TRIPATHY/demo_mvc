@@ -2,25 +2,32 @@ const app = require("./app");
 const { env } = require("./config/env");
 const { sequelize } = require("./db/sequelize");
 const { sessionStore } = require("./config/session");
-const { User } = require("./models/user.model");
-// const { verifyMailConnection } = require('./config/mail')
+// const { verifyMailConnection } = require("./config/mail");
 
 async function startServer() {
   try {
-    // Verify the database connection
     await sequelize.authenticate();
-    await sessionStore.sync();
-    await User.sync({ alter: true });
-    console.log("Session store initialized successfully.");
-    console.log("Users table initialized successfully.");
-
     console.log("PostgreSQL connection established successfully.");
 
-    // Start accepting HTTP requests
-    app.listen(env.port, () => {
+    // Only the sessions table is synced here.
+    // App tables (users, ...) are managed by migrations: `npm run migrate`
+    await sessionStore.sync();
+    console.log("Session store initialized successfully.");
+
+    const server = app.listen(env.port, () => {
       console.log(`Server running at http://localhost:${env.port}`);
     });
-    // verifyMailConnection()
+    // verifyMailConnection();
+
+    const shutdown = (signal) => {
+      console.log(`${signal} received, shutting down...`);
+      server.close(async () => {
+        await sequelize.close().catch(() => {});
+        process.exit(0);
+      });
+    };
+    process.on("SIGINT", () => shutdown("SIGINT"));
+    process.on("SIGTERM", () => shutdown("SIGTERM"));
   } catch (error) {
     console.error("Failed to start the server:");
     console.error(error.message);

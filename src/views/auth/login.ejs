@@ -1,0 +1,26 @@
+<%- include('../partials/header', { layout: 'auth' }) %>
+
+<h1>Welcome back</h1>
+<p class="lead">Log in to continue to your projects.</p>
+
+<form data-api="/api/auth/login" data-redirect="/dashboard">
+  <div class="message"></div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required autocomplete="email">
+  </div>
+
+  <div class="field">
+    <label for="password">Password</label>
+    <input type="password" id="password" name="password" required autocomplete="current-password">
+    <div class="field-link"><a href="/forgot-password">Forgot password?</a></div>
+  </div>
+
+  <button type="submit">Log in</button>
+</form>
+
+<p class="switch">New to Project Camp? <a href="/register">Create an account</a></p>
+<p class="switch"><a href="/resend-verification">Resend verification email</a></p>
+
+<%- include('../partials/footer', { layout: 'auth' }) %>

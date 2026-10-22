@@ -1,0 +1,98 @@
+<%- include('../partials/header', { scripts: ['/js/projects.js'] }) %>
+<% const isAdmin = myRole === 'admin'; %>
+
+<div class="page-head page-head-row">
+  <div>
+    <h1><%= project.name %></h1>
+    <p>
+      Created by <%= project.creator ? project.creator.name : 'a former member' %>
+      · Your role: <span class="badge"><%= roleLabels[myRole] %></span>
+    </p>
+  </div>
+  <div class="actions">
+    <a class="btn-small" href="/projects/<%= project.id %>/tasks">Tasks</a>
+    <% if (isAdmin) { %>
+      <a class="btn-small" href="/projects/<%= project.id %>/edit">Edit</a>
+      <button type="button" class="btn-small btn-danger" data-delete-project data-id="<%= project.id %>" data-name="<%= project.name %>">Delete</button>
+    <% } %>
+  </div>
+</div>
+
+<div class="message" id="page-message"></div>
+
+<% if (project.description) { %>
+  <section class="panel">
+    <h2>About</h2>
+    <p class="prewrap"><%= project.description %></p>
+  </section>
+<% } %>
+
+<section class="panel spaced">
+  <h2>Members (<%= members.length %>)</h2>
+
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% members.forEach((m) => { %>
+          <% const isMe = m.userId === currentUserId; %>
+          <tr>
+            <td><%= m.user.name %><%= isMe ? ' (you)' : '' %></td>
+            <td><%= m.user.email %></td>
+            <td>
+              <% if (isAdmin) { %>
+                <select data-member-role data-project-id="<%= project.id %>" data-user-id="<%= m.userId %>" data-current="<%= m.role %>">
+                  <% roles.forEach((r) => { %>
+                    <option value="<%= r.value %>" <%= r.value === m.role ? 'selected' : '' %>><%= r.label %></option>
+                  <% }) %>
+                </select>
+              <% } else { %>
+                <span class="badge"><%= roleLabels[m.role] %></span>
+              <% } %>
+            </td>
+            <td class="cell-right">
+              <% if (isAdmin || isMe) { %>
+                <button type="button" class="btn-small btn-danger" data-remove-member data-project-id="<%= project.id %>" data-user-id="<%= m.userId %>" data-name="<%= m.user.name %>" data-self="<%= isMe %>">
+                  <%= isMe ? 'Leave' : 'Remove' %>
+                </button>
+              <% } %>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+
+  <% if (isAdmin) { %>
+    <form class="add-member" data-add-member data-project-id="<%= project.id %>">
+      <h3>Add a member</h3>
+      <div class="message"></div>
+      <div class="add-member-row">
+        <div class="field">
+          <label for="member-email">Email</label>
+          <input type="email" id="member-email" name="email" required placeholder="They must already have an account">
+        </div>
+        <div class="field">
+          <label for="member-role">Role</label>
+          <select id="member-role" name="role">
+            <% roles.forEach((r) => { %>
+              <option value="<%= r.value %>" <%= r.value === 'member' ? 'selected' : '' %>><%= r.label %></option>
+            <% }) %>
+          </select>
+        </div>
+        <button type="submit" class="btn-inline-submit">Add</button>
+      </div>
+    </form>
+  <% } %>
+</section>
+
+<p class="note"><a href="/projects">Back to projects</a></p>
+
+<%- include('../partials/footer', { scripts: ['/js/projects.js'] }) %>

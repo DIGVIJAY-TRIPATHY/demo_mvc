@@ -1,0 +1,45 @@
+<%- include('../partials/header') %>
+
+<div class="page-head">
+  <h1>Welcome back, <%= user.name %></h1>
+  <p>Here is an overview of your account.</p>
+</div>
+
+<div class="grid">
+  <section class="panel">
+    <h2>Account</h2>
+    <dl class="details">
+      <dt>Name</dt>
+      <dd><%= user.name %></dd>
+      <dt>Email</dt>
+      <dd><%= user.email %></dd>
+    </dl>
+    <p class="note"><a href="/change-password">Change password</a></p>
+  </section>
+
+  <section class="panel">
+    <h2>Projects</h2>
+    <% if (projects.length === 0) { %>
+      <div class="empty">
+        <strong>No projects yet</strong>
+        Create a project to start organising your work.
+      </div>
+      <p class="note"><a href="/projects/new">Create your first project</a></p>
+    <% } else { %>
+      <ul class="dash-list">
+        <% projects.forEach((p) => { %>
+          <li>
+            <a href="/projects/<%= p.id %>"><%= p.name %></a>
+            <span class="badge"><%= p.role === 'admin' ? 'Admin' : p.role === 'project_admin' ? 'Project admin' : 'Member' %></span>
+          </li>
+        <% }) %>
+      </ul>
+      <p class="note">
+        <a href="/projects">View all <%= totalProjects %> <%= totalProjects === 1 ? 'project' : 'projects' %></a>
+        · <a href="/projects/new">New project</a>
+      </p>
+    <% } %>
+  </section>
+</div>
+
+<%- include('../partials/footer') %>

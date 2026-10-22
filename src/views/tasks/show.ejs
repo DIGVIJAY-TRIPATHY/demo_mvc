@@ -1,0 +1,112 @@
+<%- include('../partials/header') %>
+<% const base = '/api/projects/' + project.id + '/tasks/' + task.id; %>
+<% const fileSize = (n) => (n < 1048576 ? Math.max(1, Math.round(n / 1024)) + ' KB' : (n / 1048576).toFixed(1) + ' MB'); %>
+
+<div class="page-head page-head-row">
+  <div>
+    <h1><%= task.title %></h1>
+    <p>
+      <a href="/projects/<%= project.id %>/tasks">&larr; <%= project.name %></a>
+      · <span class="badge status-<%= task.status %>"><%= statusLabels[task.status] %></span>
+    </p>
+  </div>
+  <% if (manager) { %>
+    <div class="actions">
+      <a class="btn-small" href="/projects/<%= project.id %>/tasks/<%= task.id %>/edit">Edit</a>
+      <button type="button" class="btn-small btn-danger" data-delete-task data-url="<%= base %>" data-name="<%= task.title %>" data-redirect="/projects/<%= project.id %>/tasks">Delete</button>
+    </div>
+  <% } %>
+</div>
+
+<div class="message" id="page-message"></div>
+
+<section class="panel">
+  <dl class="details meta-grid">
+    <div>
+      <dt>Assigned to</dt>
+      <dd><%= task.assignee ? task.assignee.name : 'Unassigned' %></dd>
+    </div>
+    <div>
+      <dt>Created by</dt>
+      <dd><%= task.creator ? task.creator.name : 'a former member' %></dd>
+    </div>
+    <div>
+      <dt>Status</dt>
+      <dd>
+        <% if (canUpdate) { %>
+          <select data-task-status data-url="<%= base %>" data-current="<%= task.status %>">
+            <% statuses.forEach((s) => { %>
+              <option value="<%= s.value %>" <%= s.value === task.status ? 'selected' : '' %>><%= s.label %></option>
+            <% }) %>
+          </select>
+        <% } else { %>
+          <%= statusLabels[task.status] %>
+        <% } %>
+      </dd>
+    </div>
+  </dl>
+
+  <% if (task.description) { %>
+    <h2 class="sub-heading">Description</h2>
+    <p class="prewrap"><%= task.description %></p>
+  <% } %>
+</section>
+
+<section class="panel spaced">
+  <h2>Subtasks (<%= task.subtasks.filter((s) => s.isCompleted).length %>/<%= task.subtasks.length %> done)</h2>
+
+  <% if (task.subtasks.length === 0) { %>
+    <p class="muted">No subtasks yet.</p>
+  <% } else { %>
+    <ul class="check-list">
+      <% task.subtasks.forEach((s) => { %>
+        <li>
+          <label class="check-label">
+            <input type="checkbox" data-subtask-toggle data-url="<%= base %>/subtasks/<%= s.id %>" <%= s.isCompleted ? 'checked' : '' %> <%= canUpdate ? '' : 'disabled' %>>
+            <span class="<%= s.isCompleted ? 'done-text' : '' %>"><%= s.title %></span>
+          </label>
+          <% if (manager) { %>
+            <button type="button" class="btn-small btn-danger" data-delete-subtask data-url="<%= base %>/subtasks/<%= s.id %>">Delete</button>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+
+  <% if (manager) { %>
+    <form class="add-member" data-add-subtask data-url="<%= base %>/subtasks">
+      <div class="message"></div>
+      <div class="inline-row">
+        <div class="field">
+          <label for="subtask-title">New subtask</label>
+          <input type="text" id="subtask-title" name="title" required maxlength="200">
+        </div>
+        <button type="submit" class="btn-inline-submit">Add</button>
+      </div>
+    </form>
+  <% } %>
+</section>
+
+<section class="panel spaced">
+  <h2>Attachments (<%= task.attachments.length %>)</h2>
+
+  <% if (task.attachments.length === 0) { %>
+    <p class="muted">No files attached.</p>
+  <% } else { %>
+    <ul class="check-list">
+      <% task.attachments.forEach((a) => { %>
+        <li>
+          <span>
+            <a href="<%= base %>/attachments/<%= a.id %>"><%= a.originalName %></a>
+            <span class="hint">(<%= fileSize(a.size) %>)</span>
+          </span>
+          <% if (manager) { %>
+            <button type="button" class="btn-small btn-danger" data-delete-attachment data-url="<%= base %>/attachments/<%= a.id %>">Delete</button>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>
+
+<%- include('../partials/footer', { scripts: ['/js/tasks.js'] }) %>

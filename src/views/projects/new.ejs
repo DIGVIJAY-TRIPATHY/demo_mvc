@@ -1,0 +1,28 @@
+<%- include('../partials/header', { narrow: true, scripts: ['/js/projects.js'] }) %>
+
+<div class="page-head">
+  <h1>New project</h1>
+  <p>You will be the admin and can add other people afterwards.</p>
+</div>
+
+<div class="panel">
+  <form data-project-form data-url="/api/projects" data-method="POST" data-redirect="/projects/{id}">
+    <div class="message"></div>
+
+    <div class="field">
+      <label for="name">Project name</label>
+      <input type="text" id="name" name="name" required maxlength="120">
+    </div>
+
+    <div class="field">
+      <label for="description">Description <span class="hint">(optional)</span></label>
+      <textarea id="description" name="description" rows="4" maxlength="1000"></textarea>
+    </div>
+
+    <button type="submit">Create project</button>
+  </form>
+</div>
+
+<p class="note"><a href="/projects">Back to projects</a></p>
+
+<%- include('../partials/footer', { scripts: ['/js/projects.js'] }) %>

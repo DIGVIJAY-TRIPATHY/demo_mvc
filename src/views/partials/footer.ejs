@@ -1,0 +1,14 @@
+<% const isAuthLayout = typeof layout !== "undefined" && layout === "auth"; %>
+<% if (isAuthLayout) { %>
+      </div>
+    </main>
+  </div>
+<% } else { %>
+  </main>
+<% } %>
+  <script src="/js/auth.js"></script>
+<% if (typeof scripts !== "undefined") { scripts.forEach((src) => { %>
+  <script src="<%= src %>"></script>
+<% }) } %>
+</body>
+</html>

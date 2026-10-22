@@ -1,0 +1,65 @@
+<% const loggedIn = typeof isLoggedIn !== "undefined" && isLoggedIn;
+   const isAuthLayout = typeof layout !== "undefined" && layout === "auth"; %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#2f5d46">
+  <title><%= title %> - Project Camp</title>
+  <% if (typeof csrfToken !== "undefined") { %>
+  <meta name="csrf-token" content="<%= csrfToken %>">
+  <% } %>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<% if (isAuthLayout) { %>
+  <div class="auth-shell">
+    <aside class="auth-side">
+      <a class="brand" href="/login">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="#2f5d46" aria-hidden="true"><path d="M12 3 2 20h20L12 3Zm0 7 4.5 8h-9L12 10Z"/></svg></span>
+        Project Camp
+      </a>
+      <div class="auth-side-text">
+        <h2>Everything your team needs, in one camp.</h2>
+        <p>Projects, tasks and notes in a single place, so nobody has to ask where things are.</p>
+      </div>
+      <svg class="scene" viewBox="0 0 600 240" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
+        <circle cx="470" cy="58" r="22" fill="#f4efe6" opacity="0.85"/>
+        <polygon points="0,240 0,150 90,80 170,140 260,60 380,160 470,100 600,170 600,240" fill="#3f7359"/>
+        <polygon points="0,240 0,190 80,140 160,190 250,130 350,195 450,150 600,200 600,240" fill="#2c5842"/>
+        <rect y="205" width="600" height="35" fill="#1f3f2f"/>
+        <g fill="#1a3528">
+          <polygon points="40,215 62,150 84,215"/>
+          <polygon points="70,215 88,165 106,215"/>
+          <polygon points="520,215 545,140 570,215"/>
+          <polygon points="555,215 575,160 595,215"/>
+        </g>
+        <polygon points="260,215 310,150 360,215" fill="#f4efe6"/>
+        <polygon points="298,215 310,185 322,215" fill="#c8663a"/>
+      </svg>
+    </aside>
+    <main class="auth-main">
+      <div class="auth-box">
+<% } else { %>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="<%= loggedIn ? '/dashboard' : '/login' %>">
+        <span class="brand-mark"><svg viewBox="0 0 24 24" fill="#f4efe6" aria-hidden="true"><path d="M12 3 2 20h20L12 3Zm0 7 4.5 8h-9L12 10Z"/></svg></span>
+        Project Camp
+      </a>
+      <nav>
+        <% if (loggedIn) { %>
+          <a href="/dashboard">Dashboard</a>
+          <a href="/projects">Projects</a>
+          <a href="/change-password">Change password</a>
+          <button type="button" class="link-btn" data-logout>Log out</button>
+        <% } else { %>
+          <a href="/login">Log in</a>
+          <a href="/register">Register</a>
+        <% } %>
+      </nav>
+    </div>
+  </header>
+  <main class="container<%= typeof narrow !== 'undefined' && narrow ? ' narrow' : '' %>">
+<% } %>

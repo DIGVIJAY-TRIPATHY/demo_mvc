@@ -1,0 +1,19 @@
+<%- include('../partials/header', { layout: 'auth' }) %>
+
+<h1>Resend verification email</h1>
+<p class="lead">Did the first email not arrive? Enter your address and we will send another.</p>
+
+<form data-api="/api/auth/resend-verification" data-clear="true">
+  <div class="message"></div>
+
+  <div class="field">
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required autocomplete="email">
+  </div>
+
+  <button type="submit">Send again</button>
+</form>
+
+<p class="switch"><a href="/login">Back to log in</a></p>
+
+<%- include('../partials/footer', { layout: 'auth' }) %>

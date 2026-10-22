@@ -1,0 +1,16 @@
+<%- include('../partials/header', { layout: 'auth' }) %>
+
+<h1>Email verification</h1>
+
+<% if (!token || !email) { %>
+  <p class="lead">This verification link is not valid.</p>
+  <a class="btn" href="/resend-verification">Request a new link</a>
+<% } else { %>
+  <p class="lead">Checking your link.</p>
+  <div class="message" data-verify data-token="<%= token %>" data-email="<%= email %>">
+    <p>Verifying your email...</p>
+  </div>
+  <a class="btn" href="/login">Go to log in</a>
+<% } %>
+
+<%- include('../partials/footer', { layout: 'auth' }) %>

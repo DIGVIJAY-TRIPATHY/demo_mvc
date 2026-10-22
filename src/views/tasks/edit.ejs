@@ -1,0 +1,52 @@
+<%- include('../partials/header', { narrow: true }) %>
+
+<div class="page-head">
+  <h1>Edit task</h1>
+  <p><a href="/projects/<%= project.id %>"><%= project.name %></a></p>
+</div>
+
+<div class="panel">
+  <form data-task-form data-url="/api/projects/<%= project.id %>/tasks/<%= task.id %>" data-method="PUT" data-redirect="/projects/<%= project.id %>/tasks/{id}">
+    <div class="message"></div>
+
+    <div class="field">
+      <label for="title">Title</label>
+      <input type="text" id="title" name="title" required maxlength="200" value="<%= task.title %>">
+    </div>
+
+    <div class="field">
+      <label for="description">Description <span class="hint">(optional)</span></label>
+      <textarea id="description" name="description" rows="4" maxlength="2000"><%= task.description || '' %></textarea>
+    </div>
+
+    <div class="field">
+      <label for="assignedTo">Assign to</label>
+      <select id="assignedTo" name="assignedTo" class="full">
+        <option value="">Unassigned</option>
+        <% members.forEach((m) => { %>
+          <option value="<%= m.userId %>" <%= m.userId === task.assignedTo ? 'selected' : '' %>><%= m.user.name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="status">Status</label>
+      <select id="status" name="status" class="full">
+        <% statuses.forEach((s) => { %>
+          <option value="<%= s.value %>" <%= s.value === task.status ? 'selected' : '' %>><%= s.label %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <div class="field">
+      <label for="attachments">Add more files <span class="hint">(existing files stay, remove them on the task page)</span></label>
+      <input type="file" id="attachments" name="attachments" multiple accept=".png,.jpg,.jpeg,.gif,.webp,.pdf,.txt,.csv">
+    </div>
+
+    <button type="submit">Save changes</button>
+  </form>
+</div>
+
+<p class="note"><a href="/projects/<%= project.id %>/tasks/<%= task.id %>">Cancel</a></p>
+
+<%- include('../partials/footer', { scripts: ['/js/tasks.js'] }) %>
